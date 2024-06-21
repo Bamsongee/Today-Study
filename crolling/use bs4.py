@@ -8,12 +8,11 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from PIL import Image
 from io import BytesIO
 
 # 이미지 저장 경로 설정
-keyword = "참외"
+keyword = "당근"
 save_dir = os.path.join(os.getcwd(), keyword)
 if not os.path.isdir(save_dir):
     os.makedirs(save_dir)
@@ -27,7 +26,7 @@ service = Service(executable_path=webdriver_path)
 driver = webdriver.Chrome(service=service, options=options)
 
 # Google 이미지 검색 페이지 열기
-url = "https://www.google.com/search?q=%EC%B0%B8%EC%99%B8&sca_esv=d5d0c4751fe7bdbd&sca_upv=1&hl=ko&authuser=0&tbm=isch&sxsrf=ADLYWILoo0hS-SnFCbrHh5oxV1hDodwI8g%3A1718907984828&source=hp&biw=1152&bih=585&ei=UHR0ZsX5MOmpvr0PvYK42Q4&iflsig=AL9hbdgAAAAAZnSCYM3lw8BJAjB1-uyJ9AZmSwjmjtM6&ved=0ahUKEwjF4dee5-qGAxXplK8BHT0BLusQ4dUDCA8&uact=5&oq=%EC%B0%B8%EC%99%B8&gs_lp=EgNpbWciBuywuOyZuDIEECMYJzIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABEiPGVDJAViwF3AHeACQAQCYAXOgAcAIqgEEMC4xMLgBA8gBAPgBAYoCC2d3cy13aXotaW1nmAIOoALhBqgCCsICBxAjGCcY6gLCAgsQABiABBixAxiDAcICCBAAGIAEGLEDwgIOEAAYgAQYsQMYgwEYigWYAxSSBwM3LjegB8Aw&sclient=img"
+url = "https://www.google.com/search?q=%22%EC%B1%84%EC%86%8C+%EA%B0%80%EC%A7%80%22&sca_esv=b57ecd08564adfcd&sca_upv=1&hl=ko&authuser=0&tbm=isch&sxsrf=ADLYWIKLOrb_h-H5yQEq3VM3oQgYkA18Uw%3A1718948515265&source=hp&biw=574&bih=584&ei=oxJ1ZsXwDb-h1e8PnMKbuAk&iflsig=AL9hbdgAAAAAZnUgsyziqdbt9TUWgVV0Nl5d43I6xPHX&ved=0ahUKEwiFzoyd_uuGAxW_UPUHHRzhBpcQ4dUDCA8&uact=5&oq=%22%EC%B1%84%EC%86%8C+%EA%B0%80%EC%A7%80%22&gs_lp=EgNpbWciDyLssYTshowg6rCA7KeAIjIEEAAYHjIHEAAYgAQYGDIHEAAYgAQYGEjcjwJQ6OEBWPOHAnAJeACQAQKYAaoBoAGuE6oBBDAuMTi4AQPIAQD4AQGKAgtnd3Mtd2l6LWltZ5gCFKACyw2oAgrCAgcQIxgnGOoCwgIIEAAYgAQYsQPCAgUQABiABMICBBAAGAPCAgYQABgIGB7CAgYQABgFGB7CAgQQIxgnmAMLkgcEOC4xMqAHrk0&sclient=img"
 driver.get(url)
 
 before_h = driver.execute_script("return window.scrollY")
