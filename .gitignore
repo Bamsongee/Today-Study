@@ -1,0 +1,9 @@
+# Ignore specific files in the data_training directory
+/data_training/checkpoint
+/data_training/model.ckpt.data-00000-of-00001
+/data_training/model.ckpt.index
+/data_training/model.ckpt.meta
+/data_training/result.npy
+
+# Ignore the entire colab directory
+/colab/
