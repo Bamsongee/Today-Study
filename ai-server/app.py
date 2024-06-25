@@ -3,6 +3,8 @@ from flask import Flask, jsonify, request
 from werkzeug.utils import secure_filename
 import torch
 from yolov5 import detect
+import cv2
+from PIL import Image
 
 # NotImplementedError: cannot instantiate 'PosixPath' on your system 해결
 from pathlib import Path
@@ -41,6 +43,17 @@ def transform_labels(translated_labels):
     transformed_labels = [FoodList.get(label, label) for label in unique_labels]
     return transformed_labels
 
+def save_results_image(image_path, results, save_path):
+    image = cv2.imread(image_path)
+    for box in results.pred[0]:
+        x1, y1, x2, y2, conf, cls = box
+        label = results.names[int(cls)]
+        color = (255, 0, 0)  # 파란색으로 인식한 객체 출력
+        cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
+        cv2.putText(image, f'{label} {conf:.2f}', (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
+    
+    cv2.imwrite(save_path, image)
+
 @app.route('/detection', methods=['GET', 'POST'])
 def predict():
     output_labels = []
@@ -68,6 +81,11 @@ def predict():
                 output_labels.append(model.names[int(cls)])
 
             translated_labels = transform_labels(output_labels)
+
+            # 결과 이미지 파일로 저장
+            os.makedirs('./output_dir', exist_ok=True)
+            save_image_path = os.path.join('./output_dir', filename)
+            save_results_image(train_img, results, save_image_path)
 
             return jsonify(translated_labels), 200
         else:
