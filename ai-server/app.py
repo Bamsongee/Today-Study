@@ -12,23 +12,33 @@ pathlib.PosixPath = pathlib.WindowsPath
 
 app = Flask(__name__)
 
-FoodList = [
-    "Kochujang", "Apple", "Avocado", "Bacon", "Banana", "Beef", "Bread", "Burdock", "Butter",
-    "Cabbage", "Canned Corn", "Canned Tuna", "Carrot", "Cheese", "Chicken", "Chili Powder",
-    "Chocolate Bread", "Cinnamon", "Cooking Oil", "Corn", "Cornflake", "Crab Meat", "Cucumber",
-    "Curry Powder", "Dumpling", "Egg", "Fish Cake", "French Fries", "Garlic", "Ginger",
-    "Green Onion", "Ham", "Hash Brown", "Hotdog", "Ice", "Ketchup", "Kimchi", "Lemon",
-    "Lemon Juice", "Mandarin", "Marshmallow", "Mayonnaise", "Milk", "Mozzarella Cheese",
-    "Mushroom", "Mustard", "Nacho Chips", "Noodle", "Nutella", "Olive Oil", "Onion", "Oreo",
-    "Parmesan Cheese", "Parsley", "Pasta", "Peanut Butter", "Pear", "Pepper", "Pepper Powder",
-    "Pickle", "Pickled Radish", "Pimento", "Pineapple", "Pork", "Potato", "Ramen", "Red Wine",
-    "Rice", "Salt", "Sausage", "Seaweed", "Sesame", "Sesame Oil", "Shrimp Paste", "Soy Sauce",
-    "Spam", "Squid", "Strawberry", "Sugar", "Sweet Potato", "Tofu", "Tomato", "Wasabi",
-    "Watermelon", "Whipping Cream"
-]
+FoodList = {
+    "kochujang": "고추장", "apple": "사과", "avocado": "아보카도", "bacon": "베이컨", "banana": "바나나", 
+    "beef": "소고기", "bread": "빵", "burdock": "우엉", "butter": "버터", "cabbage": "양배추", 
+    "canned_corn": "옥수수캔", "canned_tuna": "참치캔", "carrot": "당근", "cheese": "치즈", 
+    "chicken": "닭고기", "chili_powder": "고춧가루", "chocolate_bread": "초콜릿 빵", "cinnamon": "계피", 
+    "cooking_oil": "식용유", "corn": "옥수수", "cornflake": "콘플레이크", "crab_meat": "게살", 
+    "cucumber": "오이", "curry_powder": "카레 가루", "dumpling": "만두", "egg": "계란", 
+    "fish_cake": "어묵", "french_fries": "감자튀김", "garlic": "마늘", "ginger": "생강", 
+    "green_onion": "대파", "ham": "햄", "hash_brown": "해쉬 브라운", "hotdog": "핫도그", 
+    "ice": "얼음", "ketchup": "케첩", "kimchi": "김치", "lemon": "레몬", "lemon_juice": "레몬 주스", 
+    "mandarin": "귤", "marshmallow": "마시멜로", "mayonnaise": "마요네즈", "milk": "우유", 
+    "mozzarella cheese": "모짜렐라 치즈", "mushroom": "버섯", "mustard": "머스타드", 
+    "nacho_chips": "나초 칩", "noodle": "국수", "nutella": "누텔라", "olive_oil": "올리브 오일", 
+    "onion": "양파", "oreo": "오레오", "parmesan_cheese": "파르메산 치즈", "parsley": "파슬리", 
+    "pasta": "파스타", "peanut_butter": "땅콩버터", "pear": "배", "pepper": "후추", 
+    "pepper_powder": "고추가루", "pickle": "피클", "pickled_radish": "단무지", "pimento": "피망", 
+    "pineapple": "파인애플", "pork": "돼지고기", "potato": "감자", "ramen": "라면", "red_wine": "레드 와인", 
+    "rice": "쌀", "salt": "소금", "sausage": "소시지", "seaweed": "김", "sesame": "참깨", 
+    "sesame_oil": "참기름", "shrimp_paste": "새우젓", "soy_sauce": "간장", "spam": "스팸", 
+    "squid": "오징어", "strawberry": "딸기", "sugar": "설탕", "sweet_potato": "고구마", "tofu": "두부", 
+    "tomato": "토마토", "wasabi": "와사비", "watermelon": "수박", "whipping_cream": "휘핑크림"
+}
 
 def transform_labels(translated_labels):
-    transformed_labels = [label.lower().replace(' ', '_') for label in translated_labels]
+    # 중복 제거
+    unique_labels = list(set(translated_labels))
+    transformed_labels = [FoodList.get(label, label) for label in unique_labels]
     return transformed_labels
 
 @app.route('/detection', methods=['GET', 'POST'])
@@ -57,11 +67,9 @@ def predict():
             for *box, conf, cls in results.pred[0]:
                 output_labels.append(model.names[int(cls)])
 
-            translated_labels = [FoodList[label] if label in FoodList else label for label in output_labels]
+            translated_labels = transform_labels(output_labels)
 
-            transformed_labels = transform_labels(translated_labels)
-
-            return jsonify(transformed_labels), 200
+            return jsonify(translated_labels), 200
         else:
             return jsonify({"error": "No detections made"}), 400
 
