@@ -7,4 +7,4 @@
 
 * pretretent.py
 * training.py
-* training.py
+* test.py

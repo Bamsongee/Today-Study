@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 # https://www.kurly.com/categories/908
 
 # 크롬드라이버 경로 설정
-driver_path = 'C:\\Users\\kimes\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe'
+driver_path = 'D:\\chromedriver\\chromedriver-win64\\chromedriver.exe'
 
 # ChromeOptions 객체 생성
 chrome_options = Options()
