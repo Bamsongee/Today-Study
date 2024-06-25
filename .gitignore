@@ -7,3 +7,10 @@
 
 # Ignore the entire colab directory
 /colab/
+
+# ai server
+/ai-server/yolov5/
+/ai-server/input_dir/
+
+# reciep
+/reciep/
