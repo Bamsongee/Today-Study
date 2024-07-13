@@ -3,8 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-import time
 from selenium.webdriver.common.keys import Keys
+import mysql.connector
+from mysql.connector import Error
 
 # https://www.kurly.com/categories/908
 
@@ -79,9 +80,9 @@ for element in elements:
     sale_price.append(element.text)
 
 # 가격과 품목 딕셔너리로 합치기
-karliy_data = []
+kurly_datas = []
 for image, title, discript, percent, price in zip(image_list, title_list, discript_list, percent_list, original_price):
-    karliy_data.append({
+    kurly_datas.append({
         "image": image,
         "title": title,
         "description": discript,
@@ -89,8 +90,50 @@ for image, title, discript, percent, price in zip(image_list, title_list, discri
         "price": price
     })
 
-print(karliy_data)
+print(kurly_datas)
 
 # 브라우저 닫기
 driver.quit()
 
+connection = None
+
+# MySQL 데이터베이스에 연결
+try:
+    connection = mysql.connector.connect(
+        host='localhost',  # MySQL 서버 주소
+        database='ohmea',  # 데이터베이스 이름
+        user='root',  # MySQL 사용자 이름
+        password='km923009!!'  # MySQL 비밀번호
+    )
+
+    if connection.is_connected():
+        cursor = connection.cursor()
+
+        # 테이블 생성
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS products (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            image TEXT,
+            title TEXT,
+            description TEXT,
+            percent TEXT,
+            price TEXT
+        )
+        ''')
+
+        # 데이터 삽입
+        for data in kurly_datas:
+            cursor.execute('''
+            INSERT INTO products (image, title, description, percent, price)
+            VALUES (%s, %s, %s, %s, %s)
+            ''', (data['image'], data['title'], data['description'], data['percent'], data['price']))
+
+        # 커밋하고 연결 종료
+        connection.commit()
+        print("데이터 저장 성공")
+        cursor.close()
+        connection.close()
+        print("MySQL 연결 종료")
+
+except Error as e:
+    print(f"Error: {e}")
